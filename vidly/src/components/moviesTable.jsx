@@ -28,7 +28,7 @@ class MoviesTable extends Component {
                 <th />
               </tr>
             </thead>
-            <tbody> 
+            <tbody>
               {movies.map(movie => (
                 <tr key={movie._id}>
                   <td>{movie.title}</td>

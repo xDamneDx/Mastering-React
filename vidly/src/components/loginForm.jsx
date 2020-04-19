@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Input from './common/input';
-
+ 
 class LoginForm extends Component {
     state = {
         account: {

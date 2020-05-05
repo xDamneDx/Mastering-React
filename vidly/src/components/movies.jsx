@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { getMovies } from '../services/fakeMovieService';
-import { getGenres } from '../services/fakeGenreService';
-import MoviesTable from './moviesTable';
-import Pagination from './common/pagination';
-import { paginate } from '../utils/paginate';
-import ListGoup from './common/listGroup';
-import SearchBox from './searchBox';
-import _ from 'lodash';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import MoviesTable from './moviesTable';
+import ListGoup from './common/listGroup';
+import Pagination from './common/pagination';
+import { getMovies, deleteMovie } from '../services/movieService';
+import { getGenres } from '../services/genreService';
+import { paginate } from '../utils/paginate';
+import _ from 'lodash';
+import SearchBox from './searchBox';
 
 class Movies extends Component {
   state = {
@@ -20,10 +21,12 @@ class Movies extends Component {
       sortColumn: { path: 'title', order: 'asc' }
   }
 
-  componentDidMount() {
-    const genres = [{ _id: '', name: 'All Genres' }, ...getGenres()];
+  async componentDidMount() {
+    const { data } = await getGenres(); 
+    const genres = [{ _id: '', name: 'All Genres' }, ...data];
 
-    this.setState({ movies: getMovies(), genres });
+    const { data: movies } = await getMovies();
+    this.setState({ movies, genres });
   };
 
   handleLike = movie => {
@@ -34,9 +37,19 @@ class Movies extends Component {
     this.setState({ movies });
   }
 
-  handleDelete = movie => {
-    const movies = this.state.movies.filter(stateMovie => stateMovie._id !== movie._id)
+  handleDelete = async movie => {
+    const originalMovies = this.state.movies;
+    const movies = originalMovies.filter(stateMovie => stateMovie._id !== movie._id)
     this.setState({ movies })
+
+    try {
+      await deleteMovie(movie._id);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404) {
+        toast.error('This movie has already been deleted.');
+        this.setState({ movies: originalMovies });
+      }
+    }
   }
 
   handlePageChange = page => {

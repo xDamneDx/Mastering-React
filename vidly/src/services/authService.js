@@ -27,9 +27,14 @@ export const getCurrentUser = () => {
   }
 };
 
+export const getJwt = () => {
+  return localStorage.getItem(tokenKey);
+};
+
 export default {
   login,
   loginWithJwt,
   logout,
-  getCurrentUser
+  getCurrentUser,
+  getJwt
 };

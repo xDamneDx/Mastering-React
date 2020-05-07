@@ -31,6 +31,8 @@ export const getJwt = () => {
   return localStorage.getItem(tokenKey);
 };
 
+http.setJwt(getJwt());
+
 export default {
   login,
   loginWithJwt,

@@ -1,13 +1,30 @@
-import React from 'react';
-// import Movie from './hoc/Movie';
-import Counter from './hooks/Counter';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import MoviePage from './context/MoviePage';
+import UserContext from './context/userContext';
+import CartContext from './context/cartContext';
+import Login from './context/Login';
 
-function App() {
-  return (
-    <Counter />
-  );
+class App extends Component {
+  handleLoggedIn = username => {
+    console.log("Getting the user: " + username);
+    const user = { name: 'Vladimir' };
+    this.setState({ currentUser: user });
+  }
+
+  state = { currentUser: null };
+
+  render () {
+    return (
+      <CartContext.Provider value={{ cart: [] }}>
+        <UserContext.Provider value={{ currentUser: this.state.currentUser, onLoggedIn: this.handleLoggedIn }}>
+          <div>
+            <MoviePage />
+            <Login />
+          </div>
+        </UserContext.Provider>
+      </CartContext.Provider>
+    );
+  }
 }
 
 export default App;
